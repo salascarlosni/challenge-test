@@ -1,3 +1,4 @@
+import os
 from flask_jwt_extended import JWTManager
 
 from src.frameworks.db.firestore import create_firestore_client
@@ -52,5 +53,5 @@ blueprints = [
 app = create_flask_app(blueprints)
 
 # Configurando JWT para autenticatión en el microservicio
-app.config["JWT_SECRET_KEY"] = "super-secret"
-jwt = JWTManager(app)
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
+JWTManager(app)

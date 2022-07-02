@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 from enviame.inputvalidation import validate_schema_flask, FAIL_CODE, SUCCESS_CODE
@@ -7,6 +8,9 @@ from src.users.usecases.manage_users_usecase import ManageUsersUsecase
 from src.users.http.validation.user_validate_fields import (
     SIGNIN_USER_VALIDATE_FIELDS, SIGNUP_USER_VALIDATE_FIELDS
 )
+from src.utils.authorization import authorization
+from src.utils.constants import Roles
+from src.utils.constants import Roles
 
 
 def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
@@ -15,8 +19,21 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
 
     @blueprint.get("/users")
     @jwt_required()
+    @authorization(only=[Roles.MARKETPLACE_ADMIN.value])
     def list_users():
-        return manage_users_usecase.get_users()
+        users = manage_users_usecase.get_users()
+
+        users_dict = []
+        for user in users:
+            users_dict.append(user.serialize())
+
+        response = {
+            "code": SUCCESS_CODE,
+            "message": "Users obtained succesfully",
+            "data": users_dict
+        }
+
+        return response, HTTPStatus.OK
 
     @blueprint.post("/signup")
     @validate_schema_flask(SIGNUP_USER_VALIDATE_FIELDS)
@@ -24,19 +41,22 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
         body = request.get_json()
         user = User.from_dict(body)
 
-        access_token = manage_users_usecase.sign_in(
-            user.username, user.password)
+        access_token = manage_users_usecase.sign_up(
+            name=user.name,
+            username=user.username,
+            password=user.password
+        )
 
         if access_token:
             code = SUCCESS_CODE
             http_code = 200
             data = access_token
-            message = "User sign in succesfully"
+            message = "User sign up succesfully"
         else:
             data = None
             code = FAIL_CODE
             http_code = 401
-            message = "Login Failed: Your user ID or password is incorrect"
+            message = "Sign up Failed: please try again"
 
         response = {
             "code": code,
@@ -48,7 +68,7 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
 
         return response, http_code
 
-    @blueprint.post('/signin')
+    @blueprint.post("/signin")
     @validate_schema_flask(SIGNIN_USER_VALIDATE_FIELDS)
     def sign_in_user():
         body = request.get_json()
@@ -77,5 +97,35 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
             response["data"] = access_token
 
         return response, http_code
+
+    @blueprint.cli.command("mock-users")
+    def mock_users():
+
+        access_token_admin = manage_users_usecase.sign_up(
+            name="MARKET_ADMIN",
+            username="market_admin@example.com",
+            password="password",
+            role=Roles.MARKETPLACE_ADMIN.value
+        )
+
+        print(f"TOKEN MARKET_ADMIN: {access_token_admin} ")
+
+        access_token_store_user = manage_users_usecase.sign_up(
+            name="STORE_USER",
+            username="store_user@example.com",
+            password="password",
+            role=Roles.STORE_USER.value
+        )
+
+        print(f"TOKEN STORE_USER: {access_token_store_user} ")
+
+        access_token_marketplace_user = manage_users_usecase.sign_up(
+            name="MARKETPLACE_USER",
+            username="marketplace_user@example.com",
+            password="password",
+            role=Roles.MARKETPLACE_USER.value
+        )
+
+        print(f"TOKEN MARKETPLACE_USER: {access_token_marketplace_user} ")
 
     return blueprint

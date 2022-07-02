@@ -1,10 +1,12 @@
 import os
 import bcrypt
+
 from flask_jwt_extended import create_access_token
+from src.utils import utils
 
 from src.users.repositories.sqlalchemy_users_repository import SQLAlchemyUsersRepository
-
-PW_HASH = os.environ["ECOMMERCE_PASS_HASH"]
+from src.users.entities.user import User
+from src.utils.constants import Roles
 
 
 class ManageUsersUsecase:
@@ -15,23 +17,46 @@ class ManageUsersUsecase:
     def get_users(self):
         return self.users_repository.get_users()
 
-    def sign_up(self, username: str, name: str, password: str) -> str:
-        pass_hash = bcrypt.hashpw(password, PW_HASH)
-        user = self.users_repository.create_user()
+    def sign_up(self, username: str, name: str, password: str, role: str = Roles.MARKETPLACE_USER.value) -> str:
+        # Register a Internet user as a marketplace user
 
-    def sign_in(self, username: str, password: str) -> str:
-        user = self.users_repository.get_user_by_username_and_password(
-            username, password)
+        salt = bcrypt.gensalt()
+        pass_hash = bcrypt.hashpw(password.encode("utf-8"), salt)
+
+        current_time = utils.get_current_datetime()
+
+        user_data = User(
+            username=username,
+            password=pass_hash,
+            name=name,
+            created_at=current_time,
+            updated_at=current_time,
+            role=role
+        )
+
+        user = self.users_repository.create_user(user_data)
 
         if not user:
             return None
 
-        return self.get_token(user.username, user.role_id)
+        return self.get_token(user.username, user.role)
 
-    def get_token(username: str, role_id: int) -> str:
+    def sign_in(self, username: str, password: str) -> str:
+        user = self.users_repository.get_user_by_username_and_password(
+            username, password
+        )
+
+        if not user:
+            return None
+
+        return self.get_token(user.username, user.role)
+
+    def get_token(self, username: str, role: str) -> str:
         payload = {
             "username": username,
-            "role": role_id
+            "role": role
         }
 
         access_token = create_access_token(payload)
+
+        return access_token

@@ -4,8 +4,6 @@ import bcrypt
 from sqlalchemy import Table, Column, Integer, String, TIMESTAMP
 from src.users.entities.user import User
 
-PW_HASH = os.environ["ECOMMERCE_PASS_HASH"]
-
 
 class SQLAlchemyUsersRepository():
 
@@ -24,15 +22,18 @@ class SQLAlchemyUsersRepository():
             table_name,
             sqlalchemy_client.mapper_registry.metadata,
             Column("id", Integer, primary_key=True),
-            Column("username", String(50)),
-            Column("password", String(50)),
+            Column("name", String(50)),
+            Column("username", String(50), unique=True),
+            Column("password", String(200)),
+            Column("role", String(20)),
             Column("created_at", TIMESTAMP),
             Column("updated_at", TIMESTAMP),
             Column("deleted_at", TIMESTAMP, nullable=True),
         )
 
         sqlalchemy_client.mapper_registry.map_imperatively(
-            User, self.users_table)
+            User, self.users_table
+        )
 
     def get_users(self):
         with self.session_factory() as session:
@@ -46,6 +47,7 @@ class SQLAlchemyUsersRepository():
                 id=id,
                 deleted_at=None
             ).first()
+
             return user
 
     def create_user(self, user):
