@@ -14,8 +14,6 @@ def authorization(only: List[str]):
         def wrapper(*args, **kwargs):
             current_user = get_jwt_identity()
 
-            print(current_user)
-
             if not current_user:
                 return "User not found", HTTPStatus.UNAUTHORIZED
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from src.utils.utils import format_date
 
 
@@ -27,6 +28,7 @@ class User():
 
         return {
             "id": self.id,
+            "name": self.name,
             "username": self.username,
             "role": self.role,
 
@@ -46,9 +48,14 @@ class User():
         return data
 
     @classmethod
-    def from_dict(cls, dict):
+    def from_dict(cls, dict) -> User:
         username = dict.get("username")
         password = dict.get("password")
         name = dict.get("name")
+        role = dict.get("role")
+        id = dict.get("id")
+        created_at = dict.get("created_at")
+        updated_at = dict.get("updated_at")
+        deleted_at = dict.get("deleted_at")
 
-        return User(username=username, password=password, name=name)
+        return User(id, name, username, password, role, created_at, updated_at, deleted_at)
