@@ -1,3 +1,5 @@
+from flask_jwt_extended import JWTManager
+
 from src.frameworks.db.firestore import create_firestore_client
 from src.frameworks.db.redis import create_redis_client
 from src.frameworks.db.sqlalchemy import SQLAlchemyClient
@@ -11,6 +13,10 @@ from src.books.usecases.manage_books_usecase import ManageBooksUsecase
 from src.greeting.http.greeting_blueprint import create_greeting_blueprint
 from src.greeting.repositories.redis_greeting_cache import RedisGreetingCache
 from src.greeting.usecases.greeting_usecase import GreetingUsecase
+
+from src.users.http.user_blueprint import create_user_blueprint
+from src.users.repositories.sqlalchemy_users_repository import SQLAlchemyUsersRepository
+from src.users.usecases.manage_users_usecase import ManageUsersUsecase
 
 # Instanciar dependencias.
 
@@ -26,17 +32,25 @@ firestore_books_repository = FirestoreBooksRepository(firestore_client)
 
 sqlalchemy_client = SQLAlchemyClient()
 sqlalchemy_books_repository = SQLAlchemyBooksRepository(sqlalchemy_client)
+sqlalchemy_users_repository = SQLAlchemyUsersRepository(sqlalchemy_client)
+
 sqlalchemy_client.create_tables()
 
+# UseCases
 greeting_usecase = GreetingUsecase(redis_greeting_cache)
-# manage_books_usecase = ManageBooksUsecase(firestore_books_repository)
 manage_books_usecase = ManageBooksUsecase(sqlalchemy_books_repository)
+manage_users_usecase = ManageUsersUsecase(sqlalchemy_users_repository)
 
 blueprints = [
     create_books_blueprint(manage_books_usecase),
     create_greeting_blueprint(greeting_usecase),
+    create_user_blueprint(manage_users_usecase)
 ]
 
 # Crear aplicación HTTP con dependencias inyectadas.
 
 app = create_flask_app(blueprints)
+
+# Configurando JWT para autenticatión en el microservicio
+app.config["JWT_SECRET_KEY"] = "super-secret"
+jwt = JWTManager(app)
