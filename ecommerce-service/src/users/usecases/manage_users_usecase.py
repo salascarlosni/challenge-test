@@ -7,6 +7,7 @@ from src.utils import utils
 from src.users.repositories.sqlalchemy_users_repository import SQLAlchemyUsersRepository
 from src.users.entities.user import User
 from src.utils.constants import Roles
+from src.utils.get_jwt_token import get_token
 
 
 class ManageUsersUsecase:
@@ -39,7 +40,7 @@ class ManageUsersUsecase:
         if not user:
             return None
 
-        return self.get_token(user.username, user.role)
+        return get_token(user.username, user.role)
 
     def sign_in(self, username: str, password: str) -> str:
         user = self.users_repository.get_user_by_username_and_password(
@@ -49,14 +50,4 @@ class ManageUsersUsecase:
         if not user:
             return None
 
-        return self.get_token(user.username, user.role)
-
-    def get_token(self, username: str, role: str) -> str:
-        payload = {
-            "username": username,
-            "role": role
-        }
-
-        access_token = create_access_token(payload)
-
-        return access_token
+        return get_token(user.username, user.role)
