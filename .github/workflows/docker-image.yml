@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ develop, master ]
     
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
         echo PYTHONUNBUFFERED=${{secrets.PYTHONUNBUFFERED}} >> .env
         echo PYTHONPYCACHEPREFIX=${{secrets.PYTHONPYCACHEPREFIX}} >> .env
         echo ENVIAME_AUDIT_LOGGER_DEBUG=${{secrets.ENVIAME_AUDIT_LOGGER_DEBUG}} >> .env
-        echo FLASK_APP=${{secrets.FLASK_APP}} >> ./ecommerce-service/Docker/app/.env
+        echo FLASK_APP=${{secrets.FLASK_APP}} >> .env
         cat .env 
     
     - name: Create .env file for delivery service 
