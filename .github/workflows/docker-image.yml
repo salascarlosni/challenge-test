@@ -2,9 +2,8 @@ name: Docker Image CI
 
 on:
   pull_request:
-    branches: 
-      - develop
-      - master
+    branches: ["master", "develop"]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
