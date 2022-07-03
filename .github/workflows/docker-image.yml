@@ -1,0 +1,72 @@
+name: Docker Image CI
+
+on:
+  pull_request:
+    branches: 
+      - develop
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create env file for docker-compose
+      run: |
+          touch .env
+          echo ECOMMERCE_SERVICE_NAME=${{ secrets.ECOMMERCE_SERVICE_NAME }} >> .env
+          echo ECOMMERCE_SERVICE_PATH=${{ secrets.ECOMMERCE_SERVICE_PATH }} >> .env
+          echo ECOMMERCE_APP_PORT=${{ secrets.ECOMMERCE_APP_PORT }} >> .env
+          echo ECOMMERCE_MYSQL_NAME=${{ secrets.ECOMMERCE_MYSQL_NAME }} >> .env
+          echo ECOMMERCE_MYSQL_PORT=${{ secrets.ECOMMERCE_MYSQL_PORT }} >> .env
+          echo ECOMMERCE_JWT_SECRET_KEY=${{secrets.ECOMMERCE_JWT_SECRET_KEY}} >> .env
+          echo ECOMMERCE_REDIS_HOST=${{secrets.ECOMMERCE_REDIS_HOST}} >> .env
+          echo ECOMMERCE_FIRESTORE_NAME=${{secrets.ECOMMERCE_FIRESTORE_NAME}} >> .env
+          echo DELIVERY_SERVICE_PATH=${{secrets.DELIVERY_SERVICE_PATH}} >> .env
+          echo DELIVERY_APP_PORT=${{secrets.DELIVERY_APP_PORT}} >> .env
+          echo DELIVERY_MYSQL_NAME=${{secrets.DELIVERY_MYSQL_NAME}} >> .env
+          echo DELIVERY_MYSQL_DATABASE=${{secrets.DELIVERY_MYSQL_DATABASE}} >> .env
+          echo DELIVERY_MYSQL_PORT=${{secrets.DELIVERY_MYSQL_PORT}} >> .env
+          echo DELIVERY_REDIS_HOST=${{secrets.DELIVERY_REDIS_HOST}} >> .env
+          echo DELIVERY_FIRESTORE_NAME=${{secrets.DELIVERY_FIRESTORE_NAME}} >> .env
+          echo SQL_ALCHEMY_DRIVER=${{secrets.SQL_ALCHEMY_DRIVER}} >> .env
+          echo SQL_ALCHEMY_USERNAME=${{secrets.SQL_ALCHEMY_USERNAME}} >> .env
+          echo SQL_ALCHEMY_PASSWORD=${{secrets.SQL_ALCHEMY_PASSWORD}} >> .env
+          echo REDIS_PORT=${{secrets.REDIS_PORT}} >> .env
+          echo FIRESTORE_COLLECTION_NAME=${{secrets.FIRESTORE_COLLECTION_NAME}} >> .env
+          echo GOOGLE_APPLICATION_CREDENTIALS=${{secrets.GOOGLE_APPLICATION_CREDENTIALS}} >> .env
+          cat .env
+    
+    - name: Create .env file for ecommerce service
+      working-directory: ./ecommerce-service/Docker/app/
+      run: |
+          touch ./ecommerce-service/Docker/app/.env
+          echo PYTHONUNBUFFERED=${{secrets.PYTHONUNBUFFERED}} >> .env
+          echo PYTHONPYCACHEPREFIX=${{secrets.PYTHONPYCACHEPREFIX}} >> .env
+          echo ENVIAME_AUDIT_LOGGER_DEBUG=${{secrets.ENVIAME_AUDIT_LOGGER_DEBUG}} >> .env
+          echo FLASK_APP=${{secrets.FLASK_APP}} >> ./ecommerce-service/Docker/app/.env
+          cat .env 
+    
+    - name: Create .env file for delivery service 
+      working-directory: ./delivery-service/Docker/app/
+      run: |
+          touch .env
+          echo PYTHONUNBUFFERED=${{secrets.PYTHONUNBUFFERED}} >> .env
+          echo PYTHONPYCACHEPREFIX=${{secrets.PYTHONPYCACHEPREFIX}} >> .env
+          echo ENVIAME_AUDIT_LOGGER_DEBUG=${{secrets.ENVIAME_AUDIT_LOGGER_DEBUG}} >> .env
+          echo FLASK_APP=${{secrets.FLASK_APP}} >> .env
+          cat .env 
+    
+    - name: Build and run the docker containers
+      run: docker-compose up -d --build
+    
+    - name: Test the ecommerce service
+      run: docker exec ecommerce-service python -m pytest -rP
+      
+    - name: Test the delivery service
+      run: docker exec delivery-service python -m pytest -rP
+      
+    - name: Stop containers
+      if: always()
+      run: docker-compose -f "docker-compose.yml" down
