@@ -19,9 +19,11 @@ jobs:
         echo ECOMMERCE_APP_PORT=${{ secrets.ECOMMERCE_APP_PORT }} >> .env
         echo ECOMMERCE_MYSQL_NAME=${{ secrets.ECOMMERCE_MYSQL_NAME }} >> .env
         echo ECOMMERCE_MYSQL_PORT=${{ secrets.ECOMMERCE_MYSQL_PORT }} >> .env
+        echo ECOMMERCE_MYSQL_DATABASE=${{secrets.ECOMMERCE_MYSQL_DATABASE}} >> .env
         echo ECOMMERCE_JWT_SECRET_KEY=${{secrets.ECOMMERCE_JWT_SECRET_KEY}} >> .env
         echo ECOMMERCE_REDIS_HOST=${{secrets.ECOMMERCE_REDIS_HOST}} >> .env
         echo ECOMMERCE_FIRESTORE_NAME=${{secrets.ECOMMERCE_FIRESTORE_NAME}} >> .env
+        echo DELIVERY_SERVICE_NAME=${{secrets.DELIVERY_SERVICE_NAME}} >> .env
         echo DELIVERY_SERVICE_PATH=${{secrets.DELIVERY_SERVICE_PATH}} >> .env
         echo DELIVERY_APP_PORT=${{secrets.DELIVERY_APP_PORT}} >> .env
         echo DELIVERY_MYSQL_NAME=${{secrets.DELIVERY_MYSQL_NAME}} >> .env
