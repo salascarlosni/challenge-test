@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   pull_request:
-    branches: [ develop, master ]
+    branches: [ "develop", "master" ]
     
 jobs:
   build:
@@ -38,9 +38,9 @@ jobs:
         cat .env
     
     - name: Create .env file for ecommerce service
-      working-directory: ./ecommerce-service/Docker/app/
+      working-directory:  ecommerce-service/Docker/app/
       run: |
-        touch ./ecommerce-service/Docker/app/.env
+        touch .env
         echo PYTHONUNBUFFERED=${{secrets.PYTHONUNBUFFERED}} >> .env
         echo PYTHONPYCACHEPREFIX=${{secrets.PYTHONPYCACHEPREFIX}} >> .env
         echo ENVIAME_AUDIT_LOGGER_DEBUG=${{secrets.ENVIAME_AUDIT_LOGGER_DEBUG}} >> .env
@@ -48,7 +48,7 @@ jobs:
         cat .env 
     
     - name: Create .env file for delivery service 
-      working-directory: ./delivery-service/Docker/app/
+      working-directory: delivery-service/Docker/app/
       run: |
         touch .env
         echo PYTHONUNBUFFERED=${{secrets.PYTHONUNBUFFERED}} >> .env
