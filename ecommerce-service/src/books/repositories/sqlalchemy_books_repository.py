@@ -1,12 +1,13 @@
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, TIMESTAMP
 
 from src.books.entities.book import Book
-    
+
 # Implementación con SQL Alchemy para el repositorio de libros.
+
 
 class SQLAlchemyBooksRepository():
 
-    def __init__(self, sqlalchemy_client, test = False):
+    def __init__(self, sqlalchemy_client, test=False):
 
         # Mapear la tabla Book de forma imperativa.
         # Si "test" es true, se le agrega un sufijo al nombre de la tabla,
@@ -24,29 +25,31 @@ class SQLAlchemyBooksRepository():
         self.books_table = Table(
             table_name,
             sqlalchemy_client.mapper_registry.metadata,
-            Column("id", Integer, primary_key = True),
+            Column("id", Integer, primary_key=True),
             Column("title", String(50)),
             Column("author", String(50)),
             Column("pages", Integer),
             Column("created_at", TIMESTAMP),
             Column("updated_at", TIMESTAMP),
-            Column("deleted_at", TIMESTAMP, nullable = True),
+            Column("deleted_at", TIMESTAMP, nullable=True),
         )
 
-        sqlalchemy_client.mapper_registry.map_imperatively(Book, self.books_table)
+        sqlalchemy_client.mapper_registry.map_imperatively(
+            Book, self.books_table)
 
     def get_books(self):
-        
+
         with self.session_factory() as session:
-            
-            books = session.query(Book).filter_by(deleted_at = None).all()
+
+            books = session.query(Book).filter_by(deleted_at=None).all()
             return books
 
     def get_book(self, id):
-        
+
         with self.session_factory() as session:
 
-            book = session.query(Book).filter_by(id = id, deleted_at = None).first()
+            book = session.query(Book).filter_by(
+                id=id, deleted_at=None).first()
             return book
 
     def create_book(self, book):
@@ -62,13 +65,15 @@ class SQLAlchemyBooksRepository():
 
         # Actualiza sólo los campos de la lista "fields" en el libro especificado.
         # Luego retorna el libro con los nuevos datos.
-        
+
         with self.session_factory() as session:
 
-            session.query(Book).filter_by(id = id, deleted_at = None).update(fields)
+            session.query(Book).filter_by(
+                id=id, deleted_at=None).update(fields)
             session.commit()
-            
-            book = session.query(Book).filter_by(id = id, deleted_at = None).first()
+
+            book = session.query(Book).filter_by(
+                id=id, deleted_at=None).first()
             return book
 
     def hard_delete_book(self, id):
@@ -84,7 +89,7 @@ class SQLAlchemyBooksRepository():
         if self.test:
 
             with self.session_factory() as session:
-                
+
                 session.query(Book).delete()
                 session.commit()
 

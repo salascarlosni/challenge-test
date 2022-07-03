@@ -3,6 +3,7 @@ from flask import Blueprint, request
 from enviame.inputvalidation import validate_schema_flask, SUCCESS_CODE, FAIL_CODE
 
 from src.books.http.validation import book_validatable_fields
+from src.users.entities.user import User
 
 # Endpoints para CRUD de libros.
 
@@ -11,19 +12,20 @@ from src.books.http.validation import book_validatable_fields
 # contener lógica de negocio, sólo lo necesario para recibir y entregar
 # respuestas válidas al mundo exterior.
 
-# Se realiza la validación de datos de entrada mediante el decorador 
+# Se realiza la validación de datos de entrada mediante el decorador
 # "@validate_schema_flask", el cual recibe como argumento un diccionario definido
 # en el archivo "book_validatable_fields". No sólo valida que todos los campos
 # requeridos vengan en el payload, sino que también que no vengan campos de más.
+
 
 def create_books_blueprint(manage_books_usecase):
 
     blueprint = Blueprint("books", __name__)
 
-    @blueprint.route("/books", methods = ["GET"])
+    @blueprint.route("/books", methods=["GET"])
     def get_books():
 
-        books = manage_books_usecase.get_books()
+        books: list[User] = manage_books_usecase.get_books()
 
         books_dict = []
         for book in books:
@@ -39,10 +41,10 @@ def create_books_blueprint(manage_books_usecase):
             "message": message,
             "data": data,
         }
-        
+
         return response, http_code
 
-    @blueprint.route("/books/<string:book_id>", methods = ["GET"])
+    @blueprint.route("/books/<string:book_id>", methods=["GET"])
     def get_book(book_id):
 
         book = manage_books_usecase.get_book(book_id)
@@ -66,10 +68,10 @@ def create_books_blueprint(manage_books_usecase):
 
         if data:
             response["data"] = data
-        
+
         return response, http_code
 
-    @blueprint.route("/books", methods = ["POST"])
+    @blueprint.route("/books", methods=["POST"])
     @validate_schema_flask(book_validatable_fields.BOOK_CREATION_VALIDATABLE_FIELDS)
     def create_book():
 
@@ -98,7 +100,7 @@ def create_books_blueprint(manage_books_usecase):
 
         return response, http_code
 
-    @blueprint.route("/books/<string:book_id>", methods = ["PUT"])
+    @blueprint.route("/books/<string:book_id>", methods=["PUT"])
     @validate_schema_flask(book_validatable_fields.BOOK_UPDATE_VALIDATABLE_FIELDS)
     def update_book(book_id):
 
@@ -127,7 +129,7 @@ def create_books_blueprint(manage_books_usecase):
 
         return response, http_code
 
-    @blueprint.route("/books/<string:book_id>", methods = ["DELETE"])
+    @blueprint.route("/books/<string:book_id>", methods=["DELETE"])
     def delete_book(book_id):
 
         try:
