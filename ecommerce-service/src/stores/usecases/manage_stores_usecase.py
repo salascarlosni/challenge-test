@@ -47,6 +47,7 @@ class ManageStoresUsecase:
             }
 
             store = self.stores_repository.update_store(store_id, data)
+            return store
 
         else:
             raise ValueError(
