@@ -25,9 +25,9 @@ class TestManageBooksUsecase:
 
     def test_get_users(self, manage_users_usecase: ManageUsersUsecase):
         mock_users = [
-            User(1, "User 1", "test1@example.com",
+            User(1, "User 1", "test1@example.com", "Nicaragua",
                  "pass1", Roles.MARKETPLACE_ADMIN.value),
-            User(2, "User 2", "test2@example.com",
+            User(2, "User 2", "test2@example.com", "Nicaragua",
                  "pass2", Roles.MARKETPLACE_USER.value),
         ]
 
@@ -63,7 +63,8 @@ class TestManageBooksUsecase:
         access_token = manage_users_usecase.sign_up(
             username="test@example.com",
             name="testing-user",
-            password="password"
+            password="password",
+            shipping_address="Nicaragua"
         )
 
         assert access_token is not None

@@ -25,4 +25,9 @@ SIGNUP_USER_VALIDATE_FIELDS = {
         "required": True,
         "type": "string",
     },
+
+    "shipping_address": {
+        "required": True,
+        "type": "string"
+    }
 }
