@@ -18,7 +18,7 @@ class ManageUsersUsecase:
     def get_users(self):
         return self.users_repository.get_users()
 
-    def sign_up(self, username: str, name: str, password: str, role: str = Roles.MARKETPLACE_USER.value) -> str:
+    def sign_up(self, username: str, name: str, password: str, shipping_address: str, role: str = Roles.MARKETPLACE_USER.value) -> str:
         # Register a Internet user as a marketplace user
 
         salt = bcrypt.gensalt()
@@ -32,7 +32,8 @@ class ManageUsersUsecase:
             name=name,
             created_at=current_time,
             updated_at=current_time,
-            role=role
+            role=role,
+            shipping_address=shipping_address
         )
 
         user = self.users_repository.create_user(user_data)

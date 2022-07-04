@@ -1,3 +1,4 @@
+from datetime import timedelta
 import pytest
 
 from flask import Flask
@@ -10,6 +11,7 @@ def create_test_app():
         "TESTING": True,
     })
     app.config["JWT_SECRET_KEY"] = "TESTING_KEY"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(milliseconds=1)
     JWTManager(app)
 
     return app

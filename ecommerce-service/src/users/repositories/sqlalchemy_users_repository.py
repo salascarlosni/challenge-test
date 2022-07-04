@@ -1,7 +1,7 @@
 import os
 import bcrypt
 
-from sqlalchemy import Table, Column, Integer, String, TIMESTAMP
+from sqlalchemy import ForeignKey, Table, Column, Integer, String, TIMESTAMP
 from src.users.entities.user import User
 
 
@@ -26,6 +26,8 @@ class SQLAlchemyUsersRepository():
             Column("username", String(50), unique=True),
             Column("password", String(200)),
             Column("role", String(20)),
+            Column("shipping_address", String(50)),
+
             Column("created_at", TIMESTAMP),
             Column("updated_at", TIMESTAMP),
             Column("deleted_at", TIMESTAMP, nullable=True),

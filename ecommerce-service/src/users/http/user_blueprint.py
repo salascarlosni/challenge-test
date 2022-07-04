@@ -44,7 +44,8 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
         access_token = manage_users_usecase.sign_up(
             name=user.name,
             username=user.username,
-            password=user.password
+            password=user.password,
+            shipping_address=user.shipping_address
         )
 
         if access_token:
@@ -105,7 +106,8 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
             name="MARKET_ADMIN",
             username="market_admin@example.com",
             password="password",
-            role=Roles.MARKETPLACE_ADMIN.value
+            role=Roles.MARKETPLACE_ADMIN.value,
+            shipping_address="Nicaragua"
         )
 
         print(f"TOKEN MARKET_ADMIN: {access_token_admin} ")
@@ -114,7 +116,8 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
             name="STORE_USER",
             username="store_user@example.com",
             password="password",
-            role=Roles.STORE_USER.value
+            role=Roles.STORE_USER.value,
+            shipping_address="Mexico"
         )
 
         print(f"TOKEN STORE_USER: {access_token_store_user} ")
@@ -123,7 +126,8 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
             name="MARKETPLACE_USER",
             username="marketplace_user@example.com",
             password="password",
-            role=Roles.MARKETPLACE_USER.value
+            role=Roles.MARKETPLACE_USER.value,
+            shipping_address="Chile"
         )
 
         print(f"TOKEN MARKETPLACE_USER: {access_token_marketplace_user} ")
