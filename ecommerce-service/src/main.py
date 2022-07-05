@@ -29,6 +29,10 @@ from src.products.http.product_blueprint import create_products_blueprint
 from src.products.repositories.sqlalchemy_product_repository import SQLAlchemyProductRepository
 from src.products.usecases.manage_products_usecase import ManageProductsUsecase
 
+from src.orders.http.orders_blueprint import create_orders_blueprint
+from src.orders.repositories.sqlalchemy_order_repository import SQLAlchemyOrderRepository
+from src.orders.usecases.manage_orders_usecase import ManageOrdersUsecase
+
 # Instanciar dependencias.
 
 # En el caso de uso de de libros, es es posible pasarle como parámetro el repositorio
@@ -46,15 +50,19 @@ sqlalchemy_books_repository = SQLAlchemyBooksRepository(sqlalchemy_client)
 sqlalchemy_users_repository = SQLAlchemyUsersRepository(sqlalchemy_client)
 sqlalchemy_stores_repository = SQLAlchemyStoresRepository(sqlalchemy_client)
 sqlalchemy_products_repository = SQLAlchemyProductRepository(sqlalchemy_client)
+sqlalchemy_orders_repository = SQLAlchemyOrderRepository(sqlalchemy_client)
 
 sqlalchemy_client.create_tables()
 
-# UseCases
+# useCases
 greeting_usecase = GreetingUsecase(redis_greeting_cache)
 manage_books_usecase = ManageBooksUsecase(sqlalchemy_books_repository)
 manage_stores_usecase = ManageStoresUsecase(sqlalchemy_stores_repository)
 manage_users_usecase = ManageUsersUsecase(sqlalchemy_users_repository)
 manage_products_usecase = ManageProductsUsecase(sqlalchemy_products_repository)
+manage_order_usecase = ManageOrdersUsecase(
+    sqlalchemy_orders_repository, sqlalchemy_users_repository
+)
 
 
 blueprints = [
@@ -62,13 +70,15 @@ blueprints = [
     create_greeting_blueprint(greeting_usecase),
     create_user_blueprint(manage_users_usecase),
     create_stores_blueprint(manage_stores_usecase),
-    create_products_blueprint(manage_products_usecase)
+    create_products_blueprint(manage_products_usecase),
+    create_orders_blueprint(manage_order_usecase)
 ]
 
 # Crear aplicación HTTP con dependencias inyectadas.
 app = create_flask_app(blueprints)
 
 # Configurando JWT para autenticatión en el microservicio
+# TODO: cambiar a un tiempo menor y usar refresh token
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(weeks=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(weeks=4)
 JWTManager(app)

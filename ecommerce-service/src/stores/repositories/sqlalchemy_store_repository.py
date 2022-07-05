@@ -34,6 +34,7 @@ class SQLAlchemyStoresRepository():
             Column("id", Integer, primary_key=True),
             Column("name", String(50)),
             Column("description", String(200)),
+            Column("warehouse_address", String(200)),
             Column("created_at", TIMESTAMP),
             Column("updated_at", TIMESTAMP),
             Column("deleted_at", TIMESTAMP, nullable=True),

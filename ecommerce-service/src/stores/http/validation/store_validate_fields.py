@@ -9,6 +9,11 @@ ADD_STORE_VALIDATE_FIELDS = {
         "type": "string"
     },
 
+    "warehouse_address": {
+        "required": True,
+        "type": "string"
+    },
+
     "users_ids": {
         "minlength": 1,
         "required": True,
@@ -30,12 +35,8 @@ UPDATE_STORE_VALIDATE_FIELDS = {
         "type": "string"
     },
 
-    "users_ids": {
-        "minlength": 1,
+    "warehouse_address": {
         "required": False,
-        "type": ["list"],
-        "schema": {
-            "type": "integer",
-        }
-    }
+        "type": "string"
+    },
 }

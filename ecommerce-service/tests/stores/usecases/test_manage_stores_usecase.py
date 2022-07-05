@@ -20,8 +20,8 @@ class TestManageStoresUsecase:
 
     def test_get_stores(self, manage_stores_usecase: ManageStoresUsecase):
         mock_stores = [
-            Store(1, "Store 1", "Store1 description example"),
-            Store(2, "Store 2", "Store2 description example"),
+            Store(1, "Store 1", "Store1 description example", "Yucatan"),
+            Store(2, "Store 2", "Store2 description example", "Yucatan"),
         ]
 
         manage_stores_usecase.stores_repository.get_stores.return_value = mock_stores
@@ -32,7 +32,8 @@ class TestManageStoresUsecase:
 
     def test_get_store(self, manage_stores_usecase: ManageStoresUsecase):
         store_id = 1
-        mock_store = Store(store_id, "Store 1", "Store1 description example")
+        mock_store = Store(store_id, "Store 1",
+                           "Store1 description example", "Yucatan")
 
         manage_stores_usecase.stores_repository.get_store.return_value = mock_store
         stores = manage_stores_usecase.get_store(store_id)
@@ -41,7 +42,8 @@ class TestManageStoresUsecase:
 
     def test_delete_store(self, manage_stores_usecase: ManageStoresUsecase):
         store_id = 1
-        mock_store = Store(store_id, "Store 1", "Store1 description example")
+        mock_store = Store(store_id, "Store 1",
+                           "Store1 description example", "Yucatan")
 
         manage_stores_usecase.stores_repository.update_store.return_value = mock_store
         manage_stores_usecase.stores_repository.get_store.return_value = mock_store
@@ -55,6 +57,7 @@ class TestManageStoresUsecase:
         data = {
             "name": "test-store",
             "description": "test-description store",
+            "warehouse_address": "yucatan",
             "users_ids": [1]
         }
 
