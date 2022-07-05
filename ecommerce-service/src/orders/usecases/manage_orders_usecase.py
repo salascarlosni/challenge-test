@@ -37,7 +37,7 @@ class ManageOrdersUsecase:
             "updated_at": current_time,
             "user_id": user_id,
             "delivery_address": user.shipping_address,
-            "status": OrderStatus.PENDING.value
+            "status": OrderStatus.CREATED.value
         }
 
         order = Order.from_dict(data)
@@ -45,17 +45,22 @@ class ManageOrdersUsecase:
 
         return order
 
-    def update_order(self, order_id, data):
+    def update_order(self, order_id, data, current_user):
 
-        order = self.get_order(order_id)
+        order = self.get_order(order_id, current_user)
 
         if order:
+
             data["updated_at"] = utils.get_current_datetime()
 
-            if data["status"] not in OrderStatus.__members__.values():
+            if data["status"] not in OrderStatus.__members__:
                 raise ValueError(f"Status sent is not valid, please try again")
 
-            order = self.order_repository.update_order(order_id, data)
+            order = self.orders_repository.update_order(order_id, data)
+
+            # TOOD: Llamar al servicio de delivery
+            if order.status == OrderStatus.DISPACHED.value:
+                pass
 
             return order
 
@@ -63,10 +68,20 @@ class ManageOrdersUsecase:
             raise ValueError(f"order of ID {order_id} doesn't exist.")
 
     def delete_order(self, order_id, current_user):
+        # You can only "cancel" an order if the status is "created" or "confirmed"
 
         order = self.get_order(order_id, current_user)
+        possible_status = [
+            OrderStatus.CREATED.value,
+            OrderStatus.CONFIRMED.value
+        ]
 
         if order:
+
+            if order.status not in possible_status:
+                raise ValueError(
+                    "You can't cancel this order due to the status"
+                )
 
             data = {
                 "deleted_at": utils.get_current_datetime()

@@ -94,9 +94,9 @@ def create_orders_blueprint(manage_orders_usecase: ManageOrdersUsecase):
 
         return response, http_code
 
-    # Este metodo será llamado por el servicio delivery para actualizar el estado de la orden
     @blueprint.put("/orders/<string:order_id>")
     @validate_schema_flask(UPDATE_ORDER_VALIDATE_FIELDS)
+    @jwt_required()
     def update_order(order_id):
 
         body = request.get_json()
