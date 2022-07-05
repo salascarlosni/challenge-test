@@ -50,6 +50,7 @@ class ManageProductsUsecase:
             }
 
             product = self.products_repository.update_product(product_id, data)
+            return product
 
         else:
             raise ValueError(
