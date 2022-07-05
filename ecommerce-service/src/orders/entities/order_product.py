@@ -1,14 +1,14 @@
 from src.utils.utils import format_date
 
 
-class Store():
+class OrderProduct():
 
-    def __init__(self, id, name, description, warehouse_address, created_at=None, updated_at=None, deleted_at=None):
+    def __init__(self, id, order_id, quantity, product_id, created_at=None, updated_at=None, deleted_at=None):
 
         self.id = id
-        self.name = name
-        self.description = description
-        self.warehouse_address = warehouse_address
+        self.order_id = order_id
+        self.product_id = product_id
+        self.quantity = quantity
 
         self.created_at = created_at
         self.updated_at = updated_at
@@ -18,9 +18,9 @@ class Store():
 
         return {
             "id": self.id,
-            "name": self.name,
-            "description": self.description,
-            "warehouse_address": self.warehouse_address,
+            "order_id": self.order_id,
+            "quantity": self.quantity,
+            "product_id": self.product_id,
 
             "created_at": self.created_at,
             "updated_at": self.updated_at,
@@ -28,6 +28,7 @@ class Store():
         }
 
     def serialize(self):
+
         data = self.to_dict()
 
         data.pop("deleted_at")
@@ -37,16 +38,24 @@ class Store():
 
         return data
 
-    @ classmethod
+    @classmethod
     def from_dict(cls, dict):
 
         id = dict.get("id")
-        name = dict.get("name")
-        description = dict.get("description")
-        warehouse_address = dict.get("warehouse_address")
+        order_id = dict.get("order_id")
+        quantity = dict.get("quantity")
+        product_id = dict.get("product_id")
 
         created_at = dict.get("created_at")
         updated_at = dict.get("updated_at")
         deleted_at = dict.get("deleted_at")
 
-        return Store(id, name, description, warehouse_address, created_at, updated_at, deleted_at)
+        return OrderProduct(
+            id=id,
+            order_id=order_id,
+            quantity=quantity,
+            product_id=product_id,
+            created_at=created_at,
+            updated_at=updated_at,
+            deleted_at=deleted_at
+        )

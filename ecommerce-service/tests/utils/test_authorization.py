@@ -11,7 +11,7 @@ class TestAuthorization:
         # Mock una app Flask para probar a obtener un jwt key
         with create_test_app().app_context():
             access_token = get_token(
-                username="testing@example.com", role=Roles.MARKETPLACE_USER.value
+                username="testing@example.com", role=Roles.MARKETPLACE_USER.value, user_id=1
             )
 
             assert access_token is not None

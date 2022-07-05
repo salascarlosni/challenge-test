@@ -17,7 +17,7 @@ def create_products_blueprint(manage_products_usecase):
 
     @blueprint.before_request
     @jwt_required()
-    @authorization(only=[Roles.MARKETPLACE_ADMIN.value, Roles.STORE_USER.value])
+    @authorization(only=[Roles.MARKETPLACE_ADMIN.value])
     def before_request():
         """ Protect all the routes in this blueprint """
         pass

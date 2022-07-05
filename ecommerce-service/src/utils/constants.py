@@ -4,11 +4,9 @@ from enum import Enum
 class Roles(Enum):
     MARKETPLACE_ADMIN = "MARKETPLACE_ADMIN"
     MARKETPLACE_USER = "MARKETPLACE_USER"
-    STORE_USER = "STORE_USER"
-    INTERNET_USER = "INTERNET_USER"
 
 
-class DeliverStatus(Enum):
+class OrderStatus(Enum):
     CREATED = "CREATED"
     CONFIRMED = "CONFIRMED"
     DISPACHED = "DISPACHED"

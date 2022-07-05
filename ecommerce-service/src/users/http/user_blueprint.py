@@ -112,16 +112,6 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
 
         print(f"TOKEN MARKET_ADMIN: {access_token_admin} ")
 
-        access_token_store_user = manage_users_usecase.sign_up(
-            name="STORE_USER",
-            username="store_user@example.com",
-            password="password",
-            role=Roles.STORE_USER.value,
-            shipping_address="Mexico"
-        )
-
-        print(f"TOKEN STORE_USER: {access_token_store_user} ")
-
         access_token_marketplace_user = manage_users_usecase.sign_up(
             name="MARKETPLACE_USER",
             username="marketplace_user@example.com",

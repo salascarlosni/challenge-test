@@ -1,12 +1,12 @@
 import os
 import bcrypt
 
-from flask_jwt_extended import create_access_token
-from src.utils import utils
 
 from src.users.repositories.sqlalchemy_users_repository import SQLAlchemyUsersRepository
 from src.users.entities.user import User
 from src.utils.constants import Roles
+
+from src.utils import utils
 from src.utils.get_jwt_token import get_token
 
 
@@ -41,7 +41,7 @@ class ManageUsersUsecase:
         if not user:
             return None
 
-        return get_token(user.username, user.role)
+        return get_token(user.username, user.role, user.id)
 
     def sign_in(self, username: str, password: str) -> str:
         user = self.users_repository.get_user_by_username_and_password(
@@ -51,4 +51,4 @@ class ManageUsersUsecase:
         if not user:
             return None
 
-        return get_token(user.username, user.role)
+        return get_token(user.username, user.role, user.id)
