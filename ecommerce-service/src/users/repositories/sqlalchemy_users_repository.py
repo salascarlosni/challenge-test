@@ -1,7 +1,7 @@
 import os
 import bcrypt
 
-from sqlalchemy import ForeignKey, Table, Column, Integer, String, TIMESTAMP
+from sqlalchemy import LargeBinary, Table, Column, Integer, String, TIMESTAMP
 from src.users.entities.user import User
 
 
@@ -24,7 +24,7 @@ class SQLAlchemyUsersRepository():
             Column("id", Integer, primary_key=True),
             Column("name", String(50)),
             Column("username", String(50), unique=True),
-            Column("password", String(200)),
+            Column("password", LargeBinary),
             Column("role", String(20)),
             Column("shipping_address", String(50)),
 
@@ -66,7 +66,10 @@ class SQLAlchemyUsersRepository():
                 deleted_at=None
             ).first()
 
-            if user and bcrypt.checkpw(password, user.password):
+            print(password)
+            print(user.password)
+
+            if user and bcrypt.checkpw(password.encode('utf8'), user.password):
                 return user
             else:
                 return None
