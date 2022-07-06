@@ -1,0 +1,13 @@
+from enum import Enum
+
+
+class Roles(Enum):
+    MARKETPLACE_ADMIN = "MARKETPLACE_ADMIN"
+    MARKETPLACE_USER = "MARKETPLACE_USER"
+
+
+class OrderStatus(Enum):
+    CREATED = "CREATED"
+    CONFIRMED = "CONFIRMED"
+    DISPACHED = "DISPACHED"
+    DELIVERED = "DELIVERED"

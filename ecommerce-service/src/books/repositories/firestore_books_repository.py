@@ -4,12 +4,13 @@ from src.books.entities.book import Book
 
 # Implementación con Firestore para el repositorio de libros.
 
+
 class FirestoreBooksRepository():
-    
-    def __init__(self, firestore_client, test = False):
+
+    def __init__(self, firestore_client, test=False):
 
         # Obtener el nombre de la colección desde variables de entorno.
-        # Si "test" es true, se le agrega un sufijo, útil para que 
+        # Si "test" es true, se le agrega un sufijo, útil para que
         # las pruebas de integración no sobreescriban los datos existentes.
 
         self.test = test
@@ -20,7 +21,7 @@ class FirestoreBooksRepository():
 
         self.collection = firestore_client.collection(collection_name)
 
-    def get_books(self, author = None, title = None, min_pages = None, max_pages = None):
+    def get_books(self, author=None, title=None, min_pages=None, max_pages=None):
 
         # Trae una lista de libros desde la colección de Firestore.
         # Al buscarlos, los transforma a entidad Book antes de retornarlos.
@@ -41,7 +42,7 @@ class FirestoreBooksRepository():
             results = results.where("pages", "<=", max_pages)
 
         books = []
-        
+
         for document in results.stream():
 
             content = document.to_dict()
@@ -60,7 +61,7 @@ class FirestoreBooksRepository():
 
             content["id"] = book_id
             book = Book.from_dict(content)
-            
+
             return book
 
         else:
@@ -75,7 +76,7 @@ class FirestoreBooksRepository():
         document.set(content)
 
         book.id = document.id
-        
+
         return book
 
     def update_book(self, book_id, fields):

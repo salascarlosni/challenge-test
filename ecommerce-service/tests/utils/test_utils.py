@@ -4,6 +4,7 @@ from src.utils import utils
 
 # Tests para las funciones utilitarias.
 
+
 class TestUtils:
 
     def test_filter_dict(self):
@@ -30,8 +31,9 @@ class TestUtils:
 
     def test_format_date(self):
 
-        test_date = datetime(year = 2021, month = 12, day = 25, hour = 10, minute = 24, second = 13, microsecond = 321654)
-        
+        test_date = datetime(year=2021, month=12, day=25,
+                             hour=10, minute=24, second=13, microsecond=321654)
+
         resulting_date = utils.format_date(test_date)
         expected_date = "2021-12-25 10:24:13"
 
