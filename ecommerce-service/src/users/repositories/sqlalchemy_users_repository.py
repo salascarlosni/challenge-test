@@ -66,9 +66,6 @@ class SQLAlchemyUsersRepository():
                 deleted_at=None
             ).first()
 
-            print(password)
-            print(user.password)
-
             if user and bcrypt.checkpw(password.encode('utf8'), user.password):
                 return user
             else:
