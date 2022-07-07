@@ -66,8 +66,30 @@ class ManageDeliveriesUsecase:
                 f"Delivery of ID {delivery_id} doesn't exist or is already deleted."
             )
 
-        delivery_updated = self.deliveries_repository.update_delivery(delivery_id, data)
-        return delivery_updated
+        # Adding timestamps and the status of the delivery
+        current_time = utils.get_current_datetime()
+
+        # Add a new tracking history status to this delivery
+        if "status" in data:
+
+            # Validate that the status inserted is existing
+            if data["status"] not in DeliveryStatus.__members__:
+                raise ValueError(f"Status sent is not valid, please try again")
+
+            first_tracking_data = {
+                "created_at": current_time,
+                "status": data["status"],
+                "updated_at": current_time,
+            }
+
+            tracking = Tracking(first_tracking_data)
+            tracking_list = delivery.trackings.append(tracking)
+
+            # data["trackings"] = tracking_list
+
+        delivery = self.deliveries_repository.update_delivery(delivery_id, data)
+
+        return delivery
 
     def delete_delivery(self, delivery_id):
         delivery = self.get_delivery(delivery_id)

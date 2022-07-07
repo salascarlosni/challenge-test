@@ -65,15 +65,15 @@ class SQLAlchemyDeliveriesRepository:
 
         return deliveries
 
-    def update_delivery(self, order_id, fields):
+    def update_delivery(self, delivery_id, fields):
 
         with self.session_factory() as session:
-            session.query(Delivery).filter_by(id=order_id, deleted_at=None).update(
+            session.query(Delivery).filter_by(id=delivery_id, deleted_at=None).update(
                 fields
             )
             session.commit()
 
-        return self.get_delivery(order_id)
+        return self.get_delivery(delivery_id)
 
     def get_delivery(self, order_id):
 

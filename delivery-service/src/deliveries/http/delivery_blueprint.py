@@ -102,7 +102,7 @@ def create_deliveries_blueprint(manage_deliveries_usecase: ManageDeliveriesUseca
         return response, http_code
 
     # TODO: add functionality
-    @blueprint.put("/deliveries/<string:delivery_id>")
+    # @blueprint.put("/deliveries/<string:delivery_id>")
     @validate_schema_flask(DELIVERY_CREATION_VALIDATE_FIELDS)
     @jwt_required()
     def update_delivery(delivery_id):
