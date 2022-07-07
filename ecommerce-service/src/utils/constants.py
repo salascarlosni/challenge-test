@@ -10,5 +10,5 @@ class Roles(Enum):
 class OrderStatus(Enum):
     CREATED = "CREATED"
     CONFIRMED = "CONFIRMED"
-    DISPACHED = "DISPACHED"
+    DISPATCHED = "DISPATCHED"
     DELIVERED = "DELIVERED"

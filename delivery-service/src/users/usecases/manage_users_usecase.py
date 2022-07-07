@@ -42,7 +42,7 @@ class ManageUsersUsecase:
         if not user:
             return None
 
-        return get_token(user.username, user.role, user.id)
+        return get_token(user.username, user.id)
 
     def sign_in(self, username: str, password: str) -> str:
         user = self.users_repository.get_user_by_username_and_password(

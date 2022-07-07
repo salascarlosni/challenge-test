@@ -1,12 +1,14 @@
 from sqlalchemy import ForeignKey, Table, Column, Integer, String, TIMESTAMP, exc
+from sqlalchemy.orm import relationship
 
 from src.frameworks.db.sqlalchemy import SQLAlchemyClient
 
 from src.orders.entities.order import Order
+from src.users.entities.user import User
+from src.product_orders.entities.product_order import ProductOrder
 
 
-class SQLAlchemyOrderRepository():
-
+class SQLAlchemyOrderRepository:
     def __init__(self, sqlalchemy_client: SQLAlchemyClient, test=False):
 
         self.client = sqlalchemy_client
@@ -29,13 +31,19 @@ class SQLAlchemyOrderRepository():
             Column("created_at", TIMESTAMP),
             Column("updated_at", TIMESTAMP),
             Column("deleted_at", TIMESTAMP, nullable=True),
-
             # relationships
-            Column("user_id", Integer, ForeignKey(f"{table_name_users}.id"))
+            Column("user_id", Integer, ForeignKey(f"{table_name_users}.id")),
         )
 
         sqlalchemy_client.mapper_registry.map_imperatively(
-            Order, self.orders_table
+            Order,
+            self.orders_table,
+            properties={
+                "user": relationship(User, backref="order_user", lazy="joined"),
+                "products": relationship(
+                    ProductOrder, backref="order_products", lazy="joined"
+                ),
+            },
         )
 
     def get_orders(self, user_id=None):
@@ -54,26 +62,20 @@ class SQLAlchemyOrderRepository():
                 session.commit()
             except exc.IntegrityError:
                 session.rollback()
-                raise ValueError(
-                    "the order selected doesn't exist or was deleted"
-                )
+                raise ValueError("the order selected doesn't exist or was deleted")
 
             return order
 
     def update_order(self, order_id, fields):
         with self.session_factory() as session:
-            session.query(Order).filter_by(
-                id=order_id, deleted_at=None
-            ).update(fields)
+            session.query(Order).filter_by(id=order_id, deleted_at=None).update(fields)
             session.commit()
 
         return self.get_order(order_id)
 
     def get_order(self, order_id: int, user_id: int = None):
         with self.session_factory() as session:
-            order = session.query(Order).filter_by(
-                id=order_id, deleted_at=None
-            )
+            order = session.query(Order).filter_by(id=order_id, deleted_at=None)
 
             if user_id:
                 order.filter_by(user_id=user_id)
