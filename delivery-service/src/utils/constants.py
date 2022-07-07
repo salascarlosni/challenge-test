@@ -1,0 +1,9 @@
+from enum import Enum
+
+
+class DeliveryStatus(Enum):
+    READY_FOR_PICK_UP = "READY_FOR_PICK_UP"
+    AT_ORIGIN = "AT_ORIGIN"
+    EN_ROUTE_OF_DELIVERY = "EN_ROUTE_OF_DELIVERY"
+    NOT_DELIVERED = "NOT_DELIVERED"
+    DELIVERED = "DELIVERED"
