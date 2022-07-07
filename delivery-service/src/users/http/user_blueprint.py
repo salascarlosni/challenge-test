@@ -98,8 +98,8 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
     @blueprint.cli.command("mock-users")
     def mock_users():
 
-        DELIVERY_USER = os.environ.get("DELIVERY_USER")
-        DELIVERY_PASS = os.environ.get("DELIVERY_PASS")
+        DELIVERY_USER = os.environ.get("ECOMMERCE_DELIVERY_USER")
+        DELIVERY_PASS = os.environ.get("ECOMMERCE_DELIVERY_PASS")
 
         access_token_admin = manage_users_usecase.sign_up(
             name="MARKET_ADMIN",

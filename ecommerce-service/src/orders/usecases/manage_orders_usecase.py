@@ -7,7 +7,8 @@ from src.orders.repositories.sqlalchemy_order_repository import (
 from src.users.repositories.sqlalchemy_users_repository import SQLAlchemyUsersRepository
 
 from src.utils.constants import OrderStatus, Roles
-from src.utils.authorization import authorization
+
+from src.tasks.add_order_to_delivery_service import update_status
 
 
 class ManageOrdersUsecase:
@@ -73,9 +74,9 @@ class ManageOrdersUsecase:
 
         order = self.orders_repository.update_order(order_id, data)
 
-        # TOOD:
-        if order.status == OrderStatus.DISPACHED.value:
-            pass
+        # Call the delivery service, to continue the flow
+        if order.status == OrderStatus.DISPATCHED.value:
+            update_status(order)
 
         return order
 

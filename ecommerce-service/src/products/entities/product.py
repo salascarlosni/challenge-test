@@ -1,9 +1,18 @@
 from src.utils.utils import format_date
 
 
-class Product():
-
-    def __init__(self, id, name, short_description, quantity, store_id, created_at=None, updated_at=None, deleted_at=None):
+class Product:
+    def __init__(
+        self,
+        id,
+        name,
+        short_description,
+        quantity,
+        store_id,
+        created_at=None,
+        updated_at=None,
+        deleted_at=None,
+    ):
 
         self.id = id
         self.name = name
@@ -23,7 +32,6 @@ class Product():
             "short_description": self.short_description,
             "quantity": self.quantity,
             "store_id": self.store_id,
-
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "deleted_at": self.deleted_at,
@@ -61,5 +69,5 @@ class Product():
             store_id=store_id,
             created_at=created_at,
             updated_at=updated_at,
-            deleted_at=deleted_at
+            deleted_at=deleted_at,
         )

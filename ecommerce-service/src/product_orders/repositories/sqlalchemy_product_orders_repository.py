@@ -1,12 +1,13 @@
-from sqlalchemy import ForeignKey, Table, Column, Integer, String, TIMESTAMP, exc
+from sqlalchemy import ForeignKey, Table, Column, Integer, TIMESTAMP, exc
+from sqlalchemy.orm import relationship
 
 from src.frameworks.db.sqlalchemy import SQLAlchemyClient
 
 from src.product_orders.entities.product_order import ProductOrder
+from src.products.entities.product import Product
 
 
-class SQLAlchemyProductOrderRepository():
-
+class SQLAlchemyProductOrderRepository:
     def __init__(self, sqlalchemy_client: SQLAlchemyClient, test=False):
 
         self.client = sqlalchemy_client
@@ -25,21 +26,26 @@ class SQLAlchemyProductOrderRepository():
             Column("quantity", Integer),
             Column("product_id", ForeignKey("Products.id")),
             Column("order_id", ForeignKey("Orders.id")),
-
             Column("created_at", TIMESTAMP),
             Column("updated_at", TIMESTAMP),
             Column("deleted_at", TIMESTAMP, nullable=True),
         )
 
         sqlalchemy_client.mapper_registry.map_imperatively(
-            ProductOrder, self.product_orders_table
+            ProductOrder,
+            self.product_orders_table,
+            properties={
+                "product": relationship(
+                    Product, backref="order_product", lazy="joined"
+                ),
+            },
         )
 
     def get_products_from_order(self, order_id):
         with self.session_factory() as session:
-            products_query = session.query(
-                ProductOrder
-            ).filter_by(deleted_at=None, order_id=order_id)
+            products_query = session.query(ProductOrder).filter_by(
+                deleted_at=None, order_id=order_id
+            )
 
             return products_query.all()
 
@@ -50,9 +56,7 @@ class SQLAlchemyProductOrderRepository():
                 session.commit()
             except exc.IntegrityError:
                 session.rollback()
-                raise ValueError(
-                    "the order selected doesn't exist or was deleted"
-                )
+                raise ValueError("the order selected doesn't exist or was deleted")
 
             return order
 
@@ -63,9 +67,7 @@ class SQLAlchemyProductOrderRepository():
                 session.commit()
             except exc.IntegrityError:
                 session.rollback()
-                raise ValueError(
-                    "the order selected doesn't exist or was deleted"
-                )
+                raise ValueError("the order selected doesn't exist or was deleted")
 
             return order
 
