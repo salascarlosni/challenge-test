@@ -15,13 +15,6 @@ def create_products_blueprint(manage_products_usecase):
 
     blueprint = Blueprint("products", __name__)
 
-    @blueprint.before_request
-    @jwt_required()
-    @authorization(only=[Roles.MARKETPLACE_ADMIN.value])
-    def before_request():
-        """ Protect all the routes in this blueprint """
-        pass
-
     @blueprint.get("/products")
     @jwt_required()
     def get_products():
@@ -46,6 +39,7 @@ def create_products_blueprint(manage_products_usecase):
         return response, http_code
 
     @blueprint.get("/products/<string:product_id>")
+    @jwt_required()
     def get_product(product_id):
 
         product = manage_products_usecase.get_product(product_id)
@@ -74,6 +68,8 @@ def create_products_blueprint(manage_products_usecase):
 
     @blueprint.post("/products")
     @validate_schema_flask(ADD_PRODUCT_VALIDATE_FIELDS)
+    @jwt_required()
+    @authorization(only=[Roles.MARKETPLACE_ADMIN.value])
     def add_product():
 
         body = request.get_json()
@@ -103,6 +99,8 @@ def create_products_blueprint(manage_products_usecase):
 
     @blueprint.put("/products/<string:product_id>")
     @validate_schema_flask(UPDATE_PRODUCT_VALIDATE_FIELDS)
+    @jwt_required()
+    @authorization(only=[Roles.MARKETPLACE_ADMIN.value])
     def update_product(product_id):
 
         body = request.get_json()
@@ -131,6 +129,8 @@ def create_products_blueprint(manage_products_usecase):
         return response, http_code
 
     @blueprint.delete("/products/<string:product_id>")
+    @jwt_required()
+    @authorization(only=[Roles.MARKETPLACE_ADMIN.value])
     def delete_product(product_id):
 
         try:

@@ -1,7 +1,7 @@
 from src.utils.utils import format_date
 
 
-class OrderProduct():
+class ProductOrder():
 
     def __init__(self, id, order_id, quantity, product_id, created_at=None, updated_at=None, deleted_at=None):
 
@@ -50,7 +50,7 @@ class OrderProduct():
         updated_at = dict.get("updated_at")
         deleted_at = dict.get("deleted_at")
 
-        return OrderProduct(
+        return ProductOrder(
             id=id,
             order_id=order_id,
             quantity=quantity,

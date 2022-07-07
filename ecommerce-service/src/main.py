@@ -33,6 +33,10 @@ from src.orders.http.orders_blueprint import create_orders_blueprint
 from src.orders.repositories.sqlalchemy_order_repository import SQLAlchemyOrderRepository
 from src.orders.usecases.manage_orders_usecase import ManageOrdersUsecase
 
+from src.product_orders.repositories.sqlalchemy_product_orders_repository import SQLAlchemyProductOrderRepository
+from src.product_orders.usecases.manage_product_orders_usecase import ManageProductOrdersUsecase
+from src.product_orders.http.product_order_blueprint import create_products_order_blueprint
+
 # Instanciar dependencias.
 
 # En el caso de uso de de libros, es es posible pasarle como parámetro el repositorio
@@ -51,6 +55,9 @@ sqlalchemy_users_repository = SQLAlchemyUsersRepository(sqlalchemy_client)
 sqlalchemy_stores_repository = SQLAlchemyStoresRepository(sqlalchemy_client)
 sqlalchemy_products_repository = SQLAlchemyProductRepository(sqlalchemy_client)
 sqlalchemy_orders_repository = SQLAlchemyOrderRepository(sqlalchemy_client)
+sqlalchemy_product_order_repository = SQLAlchemyProductOrderRepository(
+    sqlalchemy_client
+)
 
 sqlalchemy_client.create_tables()
 
@@ -63,6 +70,12 @@ manage_products_usecase = ManageProductsUsecase(sqlalchemy_products_repository)
 manage_order_usecase = ManageOrdersUsecase(
     sqlalchemy_orders_repository, sqlalchemy_users_repository
 )
+manage_product_order_usecase = ManageProductOrdersUsecase(
+    order_repository=sqlalchemy_orders_repository,
+    product_orders_repository=sqlalchemy_product_order_repository,
+    product_repository=sqlalchemy_products_repository,
+    users_repository=sqlalchemy_users_repository
+)
 
 
 blueprints = [
@@ -71,7 +84,8 @@ blueprints = [
     create_user_blueprint(manage_users_usecase),
     create_stores_blueprint(manage_stores_usecase),
     create_products_blueprint(manage_products_usecase),
-    create_orders_blueprint(manage_order_usecase)
+    create_orders_blueprint(manage_order_usecase),
+    create_products_order_blueprint(manage_product_order_usecase)
 ]
 
 # Crear aplicación HTTP con dependencias inyectadas.
