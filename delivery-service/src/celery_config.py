@@ -36,7 +36,7 @@ def setup_periodic_tasks(sender, **kwargs):
     # Calls every 30 seconds
 
     sender.add_periodic_task(
-        5.0,
+        30.0,
         change_status_of_orders.s(),
         name="Change order delivery",
     )
