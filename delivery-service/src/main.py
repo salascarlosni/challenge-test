@@ -33,6 +33,8 @@ from src.trackings.repositories.sqlalchemy_trackings_repository import (
     SQLAlchemyTrackingsRepository,
 )
 
+from src.users.http.user_blueprint import create_user_blueprint
+
 # Instanciar dependencias.
 
 # En el caso de uso de de libros, es es posible pasarle como parámetro el repositorio
@@ -63,6 +65,7 @@ blueprints = [
     create_books_blueprint(manage_books_usecase),
     create_greeting_blueprint(greeting_usecase),
     create_deliveries_blueprint(manage_deliveries_usecase),
+    create_user_blueprint(),
 ]
 
 # Crear aplicación HTTP con dependencias inyectadas.

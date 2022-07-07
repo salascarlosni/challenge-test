@@ -4,6 +4,7 @@ from enum import Enum
 class Roles(Enum):
     MARKETPLACE_ADMIN = "MARKETPLACE_ADMIN"
     MARKETPLACE_USER = "MARKETPLACE_USER"
+    DELIVERY_SERVICE = "DELIVERY_SERVICE"
 
 
 class OrderStatus(Enum):

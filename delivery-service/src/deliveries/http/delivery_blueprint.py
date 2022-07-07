@@ -21,7 +21,7 @@ def create_deliveries_blueprint(manage_deliveries_usecase: ManageDeliveriesUseca
     blueprint = Blueprint("deliveries", __name__)
 
     @blueprint.get("/deliveries")
-    # @jwt_required()
+    @jwt_required()
     def get_deliveries():
 
         deliveries = manage_deliveries_usecase.get_deliveries()
@@ -44,7 +44,7 @@ def create_deliveries_blueprint(manage_deliveries_usecase: ManageDeliveriesUseca
         return response, http_code
 
     @blueprint.get("/deliveries/<string:delivery_id>")
-    # @jwt_required()
+    @jwt_required()
     def get_delivery(delivery_id):
 
         delivery = manage_deliveries_usecase.get_delivery(delivery_id)
@@ -73,7 +73,7 @@ def create_deliveries_blueprint(manage_deliveries_usecase: ManageDeliveriesUseca
 
     @blueprint.post("/deliveries")
     @validate_schema_flask(DELIVERY_CREATION_VALIDATE_FIELDS)
-    # @jwt_required()
+    @jwt_required()
     def add_delivery():
 
         body = request.get_json()
@@ -133,7 +133,7 @@ def create_deliveries_blueprint(manage_deliveries_usecase: ManageDeliveriesUseca
         return response, http_code
 
     @blueprint.delete("/deliveries/<string:delivery_id>")
-    # @jwt_required()
+    @jwt_required()
     def delete_delivery(delivery_id):
 
         try:
@@ -155,6 +155,7 @@ def create_deliveries_blueprint(manage_deliveries_usecase: ManageDeliveriesUseca
         return response, http_code
 
     @blueprint.get("/deliveries-history")
+    @jwt_required()
     @validate_schema_flask(DELIVERY_HISTORY_VALIDATE_FIELDS)
     def get_delivery_history():
 
