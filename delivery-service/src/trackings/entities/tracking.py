@@ -5,8 +5,8 @@ class Tracking:
     def __init__(
         self,
         id,
-        status,
-        delivery_id,
+        status=None,
+        delivery_id=None,
         created_at=None,
         updated_at=None,
         deleted_at=None,
