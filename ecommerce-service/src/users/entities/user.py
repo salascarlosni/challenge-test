@@ -2,18 +2,18 @@ from __future__ import annotations
 from src.utils.utils import format_date
 
 
-class User():
-
+class User:
     def __init__(
         self,
-        id=None, name=None,
+        id=None,
+        name=None,
         username=None,
         password=None,
         role=None,
         shipping_address=None,
         created_at=None,
         updated_at=None,
-        deleted_at=None
+        deleted_at=None,
     ):
         self.id = id
         self.username = username
@@ -34,7 +34,6 @@ class User():
             "username": self.username,
             "role": self.role,
             "shipping_address": self.shipping_address,
-
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "deleted_at": self.deleted_at,
@@ -62,4 +61,14 @@ class User():
         deleted_at = dict.get("deleted_at")
         shipping_address = dict.get("shipping_address")
 
-        return User(id, name, username, password, role, shipping_address, created_at, updated_at, deleted_at)
+        return User(
+            id,
+            name,
+            username,
+            password,
+            role,
+            shipping_address,
+            created_at,
+            updated_at,
+            deleted_at,
+        )
