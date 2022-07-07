@@ -87,6 +87,7 @@ services:
       - REDIS_HOST=${DELIVERY_REDIS_HOST}
       - FIRESTORE_EMULATOR_HOST=${DELIVERY_FIRESTORE_NAME}:8080
       - FIRESTORE_PROJECT_ID=${DELIVERY_FIRESTORE_NAME}
+      - JWT_SECRET_KEY=${DELIVERY_JWT_SECRET_KEY}
 
     command: ["gunicorn", "-b", "0.0.0.0:8000", "src.main:app", "--reload", "-t 60"]
   
