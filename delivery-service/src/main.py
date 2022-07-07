@@ -33,6 +33,9 @@ from src.trackings.repositories.sqlalchemy_trackings_repository import (
     SQLAlchemyTrackingsRepository,
 )
 
+from src.users.repositories.sqlalchemy_users_repository import SQLAlchemyUsersRepository
+from src.users.usecases.manage_users_usecase import ManageUsersUsecase
+
 from src.users.http.user_blueprint import create_user_blueprint
 
 # Instanciar dependencias.
@@ -52,12 +55,14 @@ sqlalchemy_books_repository = SQLAlchemyBooksRepository(sqlalchemy_client)
 sqlalchemy_deliveries_repository = SQLAlchemyDeliveriesRepository(sqlalchemy_client)
 sqlalchemy_products_repository = SQLAlchemyProductsRepository(sqlalchemy_client)
 sqlalchemy_trackings_repository = SQLAlchemyTrackingsRepository(sqlalchemy_client)
+sqlalchemy_users_repository = SQLAlchemyUsersRepository(sqlalchemy_client)
 
 sqlalchemy_client.create_tables()
 
 greeting_usecase = GreetingUsecase(redis_greeting_cache)
 manage_books_usecase = ManageBooksUsecase(firestore_books_repository)
 manage_deliveries_usecase = ManageDeliveriesUsecase(sqlalchemy_deliveries_repository)
+manage_users_usecase = ManageUsersUsecase(sqlalchemy_users_repository)
 
 # manage_books_usecase = ManageBooksUsecase(sqlalchemy_books_repository)
 
@@ -65,7 +70,7 @@ blueprints = [
     create_books_blueprint(manage_books_usecase),
     create_greeting_blueprint(greeting_usecase),
     create_deliveries_blueprint(manage_deliveries_usecase),
-    create_user_blueprint(),
+    create_user_blueprint(manage_users_usecase),
 ]
 
 # Crear aplicación HTTP con dependencias inyectadas.

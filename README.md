@@ -64,3 +64,11 @@ To run the tests:
 The `-rP` flag is optional, and is used to display in the console the `print()` done during the tests, otherwise `pytest` will hide them, only showing them in case the test has failed.
 
 Repository tests write data to container databases, but write them to temporary tables or collections with the suffix "\ _test" that are deleted once they are finished, so as not to carry the actual data. Bear in mind that in the case of Firestore there is no data persistence yet; if the service is lowered and raised again, the previous data is lost.
+
+## Databases
+
+### Ecommerce-service-mysql
+![Screenshot](assets/ecommerce-service.png)
+
+### Delivery-service-mysql
+![Screenshot](assets/delivery-service.png)

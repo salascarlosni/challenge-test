@@ -6,6 +6,7 @@ SQLAlchemy==1.4.22
 redis==3.5.3
 celery==5.2.7
 Flask-JWT-Extended==4.4.2
+bcrypt==3.2.2
 
 # dev
 pytest==6.1.2
