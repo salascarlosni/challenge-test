@@ -3,7 +3,9 @@ from flask import Blueprint, request
 
 from enviame.inputvalidation import validate_schema_flask, SUCCESS_CODE, FAIL_CODE
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from src.orders.http.validation.order_validation_fields import UPDATE_ORDER_VALIDATE_FIELDS
+from src.orders.http.validation.order_validation_fields import (
+    UPDATE_ORDER_VALIDATE_FIELDS,
+)
 from src.orders.usecases.manage_orders_usecase import ManageOrdersUsecase
 
 from src.orders.entities.order import Order
@@ -98,11 +100,11 @@ def create_orders_blueprint(manage_orders_usecase: ManageOrdersUsecase):
     @validate_schema_flask(UPDATE_ORDER_VALIDATE_FIELDS)
     @jwt_required()
     def update_order(order_id):
-
+        current_user = get_jwt_identity()
         body = request.get_json()
 
         try:
-            order = manage_orders_usecase.update_order(order_id, body)
+            order = manage_orders_usecase.update_order(order_id, body, current_user)
             data = order.serialize()
             message = "Order updated succesfully"
             code = SUCCESS_CODE

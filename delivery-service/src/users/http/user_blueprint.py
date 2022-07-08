@@ -10,9 +10,6 @@ from src.users.http.validation.user_validate_fields import (
     SIGNIN_USER_VALIDATE_FIELDS,
     SIGNUP_USER_VALIDATE_FIELDS,
 )
-from src.utils.authorization import authorization
-from src.utils.constants import Roles
-from src.utils.constants import Roles
 
 
 def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
@@ -21,7 +18,6 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
 
     @blueprint.get("/users")
     @jwt_required()
-    @authorization(only=[Roles.MARKETPLACE_ADMIN.value])
     def list_users():
         users = manage_users_usecase.get_users()
 
@@ -47,7 +43,6 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
             name=user.name,
             username=user.username,
             password=user.password,
-            shipping_address=user.shipping_address,
         )
 
         if access_token:
@@ -103,37 +98,15 @@ def create_user_blueprint(manage_users_usecase: ManageUsersUsecase):
     @blueprint.cli.command("mock-users")
     def mock_users():
 
-        ECOMMERCE_DELIVERY_USER = os.environ.get("ECOMMERCE_DELIVERY_USER")
-        ECOMMERCE_DELIVERY_PASS = os.environ.get("ECOMMERCE_DELIVERY_PASS")
+        DELIVERY_USER = os.environ.get("ECOMMERCE_DELIVERY_USER")
+        DELIVERY_PASS = os.environ.get("ECOMMERCE_DELIVERY_PASS")
 
         access_token_admin = manage_users_usecase.sign_up(
             name="MARKET_ADMIN",
-            username="market_admin@example.com",
-            password="password",
-            role=Roles.MARKETPLACE_ADMIN.value,
-            shipping_address="Nicaragua",
+            username=DELIVERY_USER,
+            password=DELIVERY_PASS,
         )
 
         print(f"TOKEN MARKET_ADMIN: {access_token_admin} ")
-
-        access_token_marketplace_user = manage_users_usecase.sign_up(
-            name="MARKETPLACE_USER",
-            username="marketplace_user@example.com",
-            password="password",
-            role=Roles.MARKETPLACE_USER.value,
-            shipping_address="Chile",
-        )
-
-        print(f"TOKEN MARKETPLACE_USER: {access_token_marketplace_user} ")
-
-        access_token_delivery_service = manage_users_usecase.sign_up(
-            name="DELIVERY_USER",
-            username=ECOMMERCE_DELIVERY_USER,
-            password=ECOMMERCE_DELIVERY_PASS,
-            role=Roles.DELIVERY_SERVICE.value,
-            shipping_address="Chile",
-        )
-
-        print(f"TOKEN DELIVERY SERVICE: {access_token_delivery_service} ")
 
     return blueprint

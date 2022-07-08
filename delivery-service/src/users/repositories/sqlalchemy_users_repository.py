@@ -5,8 +5,7 @@ from sqlalchemy import LargeBinary, Table, Column, Integer, String, TIMESTAMP
 from src.users.entities.user import User
 
 
-class SQLAlchemyUsersRepository():
-
+class SQLAlchemyUsersRepository:
     def __init__(self, sqlalchemy_client, test=False):
 
         self.client = sqlalchemy_client
@@ -25,17 +24,12 @@ class SQLAlchemyUsersRepository():
             Column("name", String(50)),
             Column("username", String(50), unique=True),
             Column("password", LargeBinary),
-            Column("role", String(20)),
-            Column("shipping_address", String(50)),
-
             Column("created_at", TIMESTAMP),
             Column("updated_at", TIMESTAMP),
             Column("deleted_at", TIMESTAMP, nullable=True),
         )
 
-        sqlalchemy_client.mapper_registry.map_imperatively(
-            User, self.users_table
-        )
+        sqlalchemy_client.mapper_registry.map_imperatively(User, self.users_table)
 
     def get_users(self):
         with self.session_factory() as session:
@@ -45,10 +39,7 @@ class SQLAlchemyUsersRepository():
 
     def get_user_by_id(self, id):
         with self.session_factory() as session:
-            user = session.query(User).filter_by(
-                id=id,
-                deleted_at=None
-            ).first()
+            user = session.query(User).filter_by(id=id, deleted_at=None).first()
 
             return user
 
@@ -61,12 +52,13 @@ class SQLAlchemyUsersRepository():
 
     def get_user_by_username_and_password(self, username: str, password: str) -> User:
         with self.session_factory() as session:
-            user: User = session.query(User).filter_by(
-                username=username,
-                deleted_at=None
-            ).first()
+            user: User = (
+                session.query(User)
+                .filter_by(username=username, deleted_at=None)
+                .first()
+            )
 
-            if user and bcrypt.checkpw(password.encode('utf8'), user.password):
+            if user and bcrypt.checkpw(password.encode("utf8"), user.password):
                 return user
             else:
                 return None

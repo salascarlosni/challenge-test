@@ -9,8 +9,6 @@ class User:
         name=None,
         username=None,
         password=None,
-        role=None,
-        shipping_address=None,
         created_at=None,
         updated_at=None,
         deleted_at=None,
@@ -19,12 +17,10 @@ class User:
         self.username = username
         self.password = password
         self.name = name
-        self.role = role
 
         self.created_at = created_at
         self.updated_at = updated_at
         self.deleted_at = deleted_at
-        self.shipping_address = shipping_address
 
     def to_dict(self):
 
@@ -32,8 +28,6 @@ class User:
             "id": self.id,
             "name": self.name,
             "username": self.username,
-            "role": self.role,
-            "shipping_address": self.shipping_address,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "deleted_at": self.deleted_at,
@@ -54,20 +48,16 @@ class User:
         username = dict.get("username")
         password = dict.get("password")
         name = dict.get("name")
-        role = dict.get("role")
         id = dict.get("id")
         created_at = dict.get("created_at")
         updated_at = dict.get("updated_at")
         deleted_at = dict.get("deleted_at")
-        shipping_address = dict.get("shipping_address")
 
         return User(
             id,
             name,
             username,
             password,
-            role,
-            shipping_address,
             created_at,
             updated_at,
             deleted_at,
